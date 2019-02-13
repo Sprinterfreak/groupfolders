@@ -9,7 +9,7 @@ module.exports = {
 	devtool: 'source-map',
 	mode: 'production',
 	entry: {
-		app: [
+		settings: [
 			//`babel-polyfill`,
 			`whatwg-fetch`,
 			'./js/index.tsx'
