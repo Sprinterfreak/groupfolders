@@ -1,9 +1,13 @@
 <template>
-	<div style="position: relative;" v-click-outside="popoverClose">
+	<div v-if="readOnly">
+		<button v-if="!isAllowed" class="icon-deny" v-tooltip="t('groupfolders', 'Denied')"></button>
+		<button v-else class="icon-checkmark" v-tooltip="t('groupfolders', 'Allowed')"></button>
+	</div>
+	<div v-else style="position: relative;" v-click-outside="popoverClose">
 		<button @click="open = true" v-if="state === STATES.INHERIT_DENY" class="icon-deny inherited" v-tooltip="t('groupfolders', 'Denied (Inherited permission)')"></button>
-		<button @click="open = true"  v-else-if="state === STATES.INHERIT_ALLOW" class="icon-checkmark inherited" v-tooltip="t('groupfolders', 'Allowed (Inherited permission)')"></button>
-		<button @click="open = true"  v-else-if="state === STATES.SELF_DENY" class="icon-deny" v-tooltip="t('groupfolders', 'Denied')"></button>
-		<button @click="open = true"  v-else-if="state === STATES.SELF_ALLOW" class="icon-checkmark" v-tooltip="t('groupfolders', 'Allowed')"></button>
+		<button @click="open = true" v-else-if="state === STATES.INHERIT_ALLOW" class="icon-checkmark inherited" v-tooltip="t('groupfolders', 'Allowed (Inherited permission)')"></button>
+		<button @click="open = true" v-else-if="state === STATES.SELF_DENY" class="icon-deny" v-tooltip="t('groupfolders', 'Denied')"></button>
+		<button @click="open = true" v-else-if="state === STATES.SELF_ALLOW" class="icon-checkmark" v-tooltip="t('groupfolders', 'Allowed')"></button>
 		<div class="popovermenu" :class="{open: open}"><PopoverMenu :menu="menu"></PopoverMenu></div>
 	</div>
 </template>
@@ -25,11 +29,20 @@
 			state: {
 				type: Number,
 				default: STATES.INHERIT_DENY
+			},
+			readOnly: {
+				type: Boolean,
+				default: false
 			}
 		},
 		methods: {
 			popoverClose() {
 				this.open = false
+			}
+		},
+		computed: {
+			isAllowed() {
+				return this.state & 1;
 			}
 		},
 		data() {
